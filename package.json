@@ -16,6 +16,7 @@
     "postcss-simple-vars": "^3.0.0",
     "promise": "^7.1.1",
     "vue": "^2.0.1",
+    "vue-d3": "^0.1.0",
     "vue-router": "^2.0.1",
     "vuex": "^2.0.0",
     "whatwg-fetch": "^1.0.0"

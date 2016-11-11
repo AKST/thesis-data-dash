@@ -16,12 +16,12 @@
 
   export default {
     name: 'nav-bar',
-
     components: { tTitle },
 
     computed: {
       links () {
-        return this.$root.$nav.getLinks()
+        const { $nav } = this.$root
+        return $nav.getLinks()
       }
     },
 

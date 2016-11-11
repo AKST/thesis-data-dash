@@ -12,7 +12,7 @@ var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
 module.exports = {
   entry: {
-    polyfills: './src/polyfills',
+    polyfills: './src/init/polyfills.js',
     app: './src/main.js'
   },
   output: {

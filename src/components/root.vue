@@ -10,7 +10,7 @@
 
 <style>
   @import url('https://fonts.googleapis.com/css?family=Roboto+Mono:100,100i,300,300i,400,400i,500,500i,700,700i');
-  @import "styles/common.css";
+  @import "../styles/common.css";
 
   body, html {
     margin: 0;
