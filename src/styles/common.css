@@ -1,0 +1,21 @@
+
+
+@custom-media --mobile (width <= 900px);
+
+:root {
+  --color-red: #E85B70;
+  --color-yellow: hsla(42, 100%, 85%, 1);
+  --color-red-shadow: rgba(154, 75, 78, 0);
+
+  --width-container: 900px;
+  --margin-container: 0 auto;
+  line-height: 1.5;
+
+  @media (--mobile) {
+    font-size: 1.5em;
+    --width-container: 100%;
+    --margin-container: 0;
+  }
+}
+
+
