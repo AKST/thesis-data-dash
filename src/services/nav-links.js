@@ -32,5 +32,9 @@ class Navlinks {
   }
 }
 
-export const Service = Navlinks
-export default Navlinks
+export const Constructor = Navlinks
+
+export default new Navlinks([
+  new Link('/releases', 'GHC Releases'),
+  new Link('/samples', 'Samples')
+])

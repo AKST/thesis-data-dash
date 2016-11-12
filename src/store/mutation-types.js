@@ -1,0 +1,4 @@
+export const LOAD_AVERAGES = 'LOAD_AVERAGES'
+export const ERROR_MESSAGE = 'ERROR_MESSAGE'
+
+export default { LOAD_AVERAGES, ERROR_MESSAGE }

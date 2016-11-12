@@ -23,7 +23,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://localhost:8081'
+        target: 'http://localhost:8081/api'
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

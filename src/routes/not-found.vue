@@ -9,8 +9,8 @@
 
 
 <script>
-  import tTitle from 'src/components/t-title'
-  import navBar from 'src/components/nav-bar'
+  import tTitle from 'src/components/type/t-title'
+  import navBar from 'src/components/common/nav-bar'
 
   export default {
     name: 'notfound',

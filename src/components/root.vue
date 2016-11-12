@@ -5,12 +5,27 @@
 </template>
 
 <script>
-  export default { name: 'index' }
+  import { mapGetters } from 'vuex'
+
+  export default {
+    name: 'index',
+    computed: mapGetters({
+      errors: 'errorMessage'
+    })
+  }
 </script>
 
 <style>
   @import url('https://fonts.googleapis.com/css?family=Roboto+Mono:100,100i,300,300i,400,400i,500,500i,700,700i');
   @import "../styles/common.css";
+
+  :root {
+    line-height: 1.5;
+    font-size: 16px;
+    @media (--mobile) {
+      font-size: 14px;
+    }
+  }
 
   body, html {
     margin: 0;

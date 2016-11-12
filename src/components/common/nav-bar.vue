@@ -12,7 +12,8 @@
 </template>
 
 <script>
-  import tTitle from 'src/components/t-title'
+  import tTitle from 'src/components/type/t-title'
+  import nav from 'src/services/nav-links'
 
   export default {
     name: 'nav-bar',
@@ -20,8 +21,7 @@
 
     computed: {
       links () {
-        const { $nav } = this.$root
-        return $nav.getLinks()
+        return nav.getLinks()
       }
     },
 
@@ -32,13 +32,17 @@
 </script>
 
 <style scoped>
-  @import "../styles/common.css";
+  @import "../../styles/common.css";
 
   .nav-root {
     --h-padding: 0.6em;
 
     width: var(--width-container);
     margin: var(--margin-container);
+
+    @media (--mobile) {
+      width: var(--width-container-mobile);
+    }
 
     font-size: 1.5rem;
     padding: 0.75rem var(--h-padding);
@@ -74,19 +78,23 @@
   .nav-links {
     margin: 0;
     display: flex;
-    font-size: 1rem;
+    font-size: 0.6em;
     font-weight: 600;
+    box-sizing: border-box;
   }
 
   .nav-links-item {
     list-style: none;
+    padding: 0.25em 0.72em;
+    color: var(--color-yellow);
+    background-color: var(--color-red);
 
     & + .nav-links-item {
       margin-left: 1em;
     }
 
     & > .nav-links-link {
-      color: var(--color-red);
+      color: inherit;
       text-decoration: none;
     }
   }

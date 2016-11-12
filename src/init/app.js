@@ -5,7 +5,7 @@ import VueRouter from 'vue-router'
 
 import Root from 'src/components/root'
 
-export default ({ services, store, router }) => {
+export default ({ store, router }) => {
   Vue.use(VueRouter)
   Vue.use(VueD3)
   Vue.use(Vuex)
@@ -16,10 +16,6 @@ export default ({ services, store, router }) => {
 
     el: '#app',
     template: '<root/>',
-    components: { Root },
-
-    created () {
-      Object.assign(this, services)
-    }
+    components: { Root }
   })
 }

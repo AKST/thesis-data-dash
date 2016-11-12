@@ -1,5 +1,4 @@
 
-
 @custom-media --mobile (width <= 900px);
 
 :root {
@@ -9,13 +8,7 @@
 
   --width-container: 900px;
   --margin-container: 0 auto;
-  line-height: 1.5;
-
-  @media (--mobile) {
-    font-size: 1.5em;
-    --width-container: 100%;
-    --margin-container: 0;
-  }
+  --width-container-mobile: 100%;
 }
 
 

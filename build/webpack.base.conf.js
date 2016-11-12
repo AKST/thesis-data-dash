@@ -93,6 +93,7 @@ module.exports = {
     loaders: utils.cssLoaders({ sourceMap: useCssSourceMap }),
     postcss: [
       require('postcss-import'),
+      require('postcss-css-variables'),
       require('postcss-cssnext')({
         browsers: ['last 2 versions']
       })
