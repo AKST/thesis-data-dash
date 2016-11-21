@@ -16,7 +16,6 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Roboto+Mono:100,100i,300,300i,400,400i,500,500i,700,700i');
   @import "../styles/common.css";
 
   :root {
@@ -34,8 +33,14 @@
     position: relative;
   }
 
-  .akst__thesis {
+  html {
+    font-family: Helvetica, Arial, sans-serif;
+  }
+  html.wf-active {
     font-family: 'Roboto Mono', Helvetica, Arial, sans-serif;
+  }
+
+  .akst__thesis {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--color-yellow);

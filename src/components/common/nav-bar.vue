@@ -1,29 +1,34 @@
 <template>
   <section class="nav-root">
-    <a class="nav-title-link" href="/">
-      <t-title class="nav-title" :message="message" :level="titleLevel"></t-title>
-    </a>
-    <ul class="nav-links">
-      <li class="nav-links-item" v-for="item in links">
-        <a class="nav-links-link" v-bind:href="item.url">{{item.name}}</a>
-      </li>
-    </ul>
+    <!-- since flex box takes absolute elements in
+      -  consideration, we can't make .nav-root have
+      -  space-between as justify-content and flex box
+      -->
+    <div class="nav-root-center">
+      <a class="nav-title-link" href="/">
+        <t-title class="nav-title" :message="message" :level="titleLevel"></t-title>
+      </a>
+      <ul class="nav-links">
+        <li class="nav-links-item" v-for="item in links">
+          <a class="nav-links-link" v-bind:href="item.url">{{item.name}}</a>
+        </li>
+      </ul>
+    </div>
   </section>
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   import tTitle from 'src/components/type/t-title'
-  import nav from 'src/services/nav-links'
 
   export default {
     name: 'nav-bar',
     components: { tTitle },
 
-    computed: {
-      links () {
-        return nav.getLinks()
-      }
-    },
+    computed: mapGetters({
+      links: 'navItems'
+    }),
 
     data () {
       return { message: 'Thesis', titleLevel: 1 }
@@ -34,23 +39,28 @@
 <style scoped>
   @import "../../styles/common.css";
 
-  .nav-root {
-    --h-padding: 0.6em;
+  .nav-root-center {
 
+    width: 100;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-root {
+    font-size: 1.5rem;
+    --h-padding: 0.6em;
+    position: relative;
+    box-sizing: border-box;
+
+    padding: 0.75rem var(--h-padding);
     width: var(--width-container);
     margin: var(--margin-container);
 
     @media (--mobile) {
       width: var(--width-container-mobile);
     }
-
-    font-size: 1.5rem;
-    padding: 0.75rem var(--h-padding);
-    position: relative;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 
     &:after {
       position: absolute;
