@@ -77,6 +77,7 @@
   .nav-title {
     text-shadow: var(--color-red-shadow) 2px 2px;
     line-height: 1;
+    font-size: 1.5em;
   }
 
   .nav-links {

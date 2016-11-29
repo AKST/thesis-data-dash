@@ -36,6 +36,13 @@ export const mutations = {
 export const getters = {
   allPackages (state) {
     return state.data
+  },
+  allPackagesAsMap (state) {
+    const map = new Map()
+    for (const { id, name } of state.data) {
+      map.set(id, name)
+    }
+    return map
   }
 }
 

@@ -9,7 +9,8 @@
   --margin-container: 0 auto;
   --width-container: 900px;
   --width-shared-right: 300px;
-  --width-shared-left: calc(100% - var(--width-shared-right));
+  --width-shared-left: 300px;
+  --width-shared-center: calc(100% - (var(--width-shared-right) + var(--width-shared-left)));
   --width-container-mobile: 100%;
   --height-nav: 70px;
 
@@ -25,10 +26,14 @@
   --shared-parent-theme: {
     display: flex;
     position: relative;
-  }
+  };
 
   --shared-left-theme: {
     width: var(--width-shared-left);
+  };
+
+  --shared-center-theme: {
+    width: var(--width-shared-center);
     padding-right: 1rem;
     /*margin: var(--margin-container);*/
 

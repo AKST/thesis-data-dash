@@ -3,6 +3,7 @@
 </template>
 
 <script>
+  import { elementHeight, elementWidth } from 'src/util/dom'
   import { select as d3Select } from 'd3-selection'
   import { scaleLinear } from 'd3-scale'
   import { axisBottom, axisLeft } from 'd3-axis'
@@ -15,7 +16,9 @@
     },
 
     props: {
-      graphData: { type: Object },
+      items: { type: Array },
+      xAxis: { type: Object },
+      yAxis: { type: Object },
       onNodeEnter: {
         type: Function,
         default: function () {
@@ -30,9 +33,13 @@
       }
     },
 
-    mounted () {
-      if (this.graphData != null) {
+    mounted: function self () {
+      if (this.items != null) {
         this.renderData()
+      }
+      else {
+        // if not ready just do this till it is
+        window.requestAnimationFrame(self.bind(this))
       }
     },
 
@@ -45,36 +52,22 @@
     },
 
     watch: {
-      graphData () {
+      items () {
         this.renderData()
       }
     },
 
     methods: {
       performResize (event) {
-        this.renderData()
-        this.$data._animationFrame = 0
+        if (this.items != null) {
+          this.renderData()
+          this.$data._animationFrame = 0
+        }
       },
       handleResize (event) {
         if (this.$data._animationFrame === 0) {
           this.$data._animationFrame = window.requestAnimationFrame(this.performResize)
         }
-      },
-      calcWidth () {
-        const style = getComputedStyle(this.$el, null)
-        const lPadding = parseInt(style.getPropertyValue('padding-left'), 10)
-        const rPadding = parseInt(style.getPropertyValue('padding-right'), 10)
-        const withPadding = this.$el.scrollWidth
-
-        return withPadding - (lPadding + rPadding)
-      },
-      calcHeight () {
-        const style = getComputedStyle(this.$el, null)
-        const tPadding = parseInt(style.getPropertyValue('padding-top'), 10)
-        const bPadding = parseInt(style.getPropertyValue('padding-bottom'), 10)
-        const withPadding = this.$el.scrollHeight
-
-        return withPadding - (tPadding + bPadding)
       },
       /**
        * Renders scatter plot based on data provided by properties
@@ -84,13 +77,12 @@
           this.$el.removeChild(this._chart.node())
         }
 
-        const { items, range: { x, y } } = this.graphData
         const margin = 50
 
         // we take margin from here because the axis info
         // needs to go somewhere so we put it here
-        const width = this.calcWidth() - (margin * 3.5)
-        const height = this.calcHeight() - (margin * 2)
+        const width = elementWidth(this.$el) - (margin * 3.5)
+        const height = elementHeight(this.$el) - (margin * 2)
 
         const chart = this._chart = d3Select(this.$el)
           .append('svg:svg')
@@ -108,13 +100,12 @@
             .attr('class', 'akst__g-sp__svg__main')
 
         const xScale = scaleLinear()
-          .domain([x.min, x.max])
+          .domain([this.xAxis.min, this.xAxis.max])
           .range([0, width + (margin / 2)])
 
-        console.log(x.difference / 20)
         const yScale = scaleLinear()
-          .domain([y.min, y.max])
-          .range([height, 0 - (y.difference / 10)])
+          .domain([this.yAxis.min, this.yAxis.max])
+          .range([height, 0 - (this.yAxis.difference / 10)])
 
         main.append('g')
           .attr('transform', `translate(0,${height})`)
@@ -128,7 +119,7 @@
 
         main.append('svg:g')
           .selectAll('akst__g-sp__svg__item')
-            .data(items).enter().append('svg:circle')
+            .data(this.items).enter().append('svg:circle')
               .attr('cx', item => xScale(item.x))
               .attr('cy', item => yScale(item.y))
               .attr('class', 'akst__g-sp__svg__item')
@@ -142,7 +133,7 @@
           .attr('text-anchor', 'middle')
           .attr('transform', `translate(${xTitleX}, ${xTitleY})`)
           .attr('class', 'akst__g-sp__svg__axis__label')
-          .text(x.description)
+          .text(this.xAxis.description)
 
         const yTitleX = margin * 0.75
         const yTitleY = (height / 2) + margin
@@ -150,13 +141,14 @@
           .attr('text-anchor', 'middle')
           .attr('transform', `translate(${yTitleX}, ${yTitleY}) rotate(-90)`)
           .attr('class', 'akst__g-sp__svg__axis__label')
-          .text(y.description)
+          .text(this.yAxis.description)
       }
     }
   }
 </script>
 
 <style>
+  /* not scoped due styles being attached to svg */
   @import "../../styles/common.css";
 
   .akst__g-sp {
@@ -180,8 +172,10 @@
     font-weight: 900;
   }
 
-  .akst__g-sp__svg__axis--x {
+  .akst__g-sp__svg__axis--x > .tick > text {
     font-size: 0.6rem;
+    transform: rotate(-10deg) translateY(5px);
+    text-anchor: end;
   }
 
   .akst__g-sp__svg__axis--y {

@@ -1,31 +1,46 @@
 <template>
-  <div class="akst__r-index">
+  <div class="root">
     <nav-bar/>
-    <div class="akst__r-index__content">
-      <div class="akst__r-index__left">
-        <t-title class="akst__r-index__vis-title" :message="graphTitle" :level="2"/>
+    <div class="panels">
+      <!-- tuning visualisation -->
+      <div class="left">
+        <tTitle :level="3" :message="'Filter'" class="side-title"/>
+
+        <tTitle :level="4" :message="'Total Size Bounds'" class="filter-item-description"/>
+        <i-slider :range="xAxisCanonical" :onChange="xFilterUpdate" class="filter-slider"/>
+
+        <tTitle :level="4" :message="'Average Time Bounds'" class="filter-item-description"/>
+        <i-slider :range="yAxisCanonical" :onChange="yFilterUpdate" class="filter-slider"/>
+      </div>
+
+      <!-- visualisation -->
+      <div class="center">
+        <t-title class="center-title" :message="graphTitle" :level="2"/>
         <g-scatter-plot
           :onNodeEnter="nodeEntryData"
-          :graphData="graphData"
+          :items="graphData"
+          :xAxis="xAxisFiltered"
+          :yAxis="yAxisFiltered"
           class="akst__r-index__visualisation"/>
       </div>
-      <div class="akst__r-index__right" v-if="showMoreInfo">
-        <tTitle :level="3" :message="'Node Info'" class="akst__r-index__info-title"/>
-        <ul class="akst__r-index__meta-ls">
-          <li class="akst__r-index__meta" v-for="i in metaItems">
-            <span class="akst__r-index__meta__key">{{i.key}}</span>
-            <span class="akst__r-index__meta__value" v-if="i.hasLink">
-              <a v-bind:href="i.link" class="akst__r-index__meta__value__link">{{i.value}}</a>
+
+      <!-- left bar that contains state about nodes-->
+      <div class="right">
+        <tTitle :level="3" :message="'Node Info'" class="side-title"/>
+
+        <!-- active state for side bar -->
+        <ul class="metainfo-ls" v-if="showMoreInfo">
+          <li class="metainfo-it" v-for="i in metaItems">
+            <span class="metainfo-key">{{i.key}}</span>
+            <span class="metainfo-value" v-if="i.link">
+              <a v-bind:href="i.link" class="metainfo-value-link">{{i.value}}</a>
             </span>
-            <span class="akst__r-index__meta__value" v-else>{{i.value}}</span>
+            <span class="metainfo-value" v-else>{{i.value}}</span>
           </li>
         </ul>
-      </div>
-      <div class="akst__r-index__right" v-else>
-        <tTitle :level="3" :message="'Node Info'" class="akst__r-index__info-title"/>
-        <p class="akst__r-index__info__empty">
-          No package has been selected
-        </p>
+
+        <!-- empty state for side bar -->
+        <p class="metainfo-empty" v-else>No package has been selected</p>
       </div>
     </div>
   </div>
@@ -35,56 +50,29 @@
   import { mapGetters } from 'vuex'
 
   import { commaSeperate } from 'src/util/math'
-  import { Range, Node } from 'src/util/graph-model'
+  import { prepareForPlot, RangeFactory } from 'src/util/graph-model'
   import navBar from 'src/components/common/nav-bar'
   import tTitle from 'src/components/type/t-title'
   import gScatterPlot from 'src/components/graph/scatter-plot'
+  import iSlider from 'src/components/input/i-slider'
 
-  class MetaEntry {
-    constructor (key, value, link = '') {
-      this.key = key
-      this.value = value
-      this.link = link
-    }
-    get hasLink () {
-      return this.link !== ''
-    }
-  }
-
-  /**
-   * Generates data for the scatter plot based off packages
-   * average data for said packages
-   */
-  function composeData ({ packages, averages }) {
-    const names = new Map()
-
-    for (const { id, name } of packages) {
-      names.set(id, name)
-    }
-
-    const xRange = new Range('Total Size (bytes)')
-    const yRange = new Range('Average Time (seconds)')
-    const items = []
-
-    for (const { package_id: id, total_size: x, average_time: y, ghc_version } of averages) {
-      if (typeof x === 'number') xRange.adjust(x)
-      if (typeof y === 'number') yRange.adjust(y)
-      items.push(new Node(x, y, { name: names.get(id), id, ghc_version }))
-    }
-
-    return { items, range: { x: xRange, y: yRange } }
-  }
+  const xFactory = new RangeFactory('Total Size (bytes)')
+  const yFactory = new RangeFactory('Average Time (seconds)')
 
   /**
    * Main url of thesis dashboard
    */
   export default {
     name: 'index',
-    components: { navBar, gScatterPlot, tTitle },
+    components: { navBar, gScatterPlot, tTitle, iSlider },
 
     data () {
       return {
         graphTitle: 'Binary Size / Average Compliation',
+        xAxisCanonical: null,
+        yAxisCanonical: null,
+        xAxisFiltered: null,
+        yAxisFiltered: null,
         graphData: null,
         // the currently focused node
         focusedNode: null,
@@ -95,26 +83,27 @@
       }
     },
 
-    computed: mapGetters({ averages: 'allAverages', packages: 'allPackages' }),
+    computed: mapGetters({ averages: 'allAverages', packages: 'allPackagesAsMap' }),
 
     watch: {
+      /**
+       * This is expected to fire whenever new data is available
+       * for averages or on initial load
+       */
       averages (update) {
-        if (this.packages == null || update == null) return
-        this.graphData = composeData({ packages: this.packages, averages: update })
-      },
-      packages (update) {
-        if (this.averages == null || update == null) return
-        this.graphData = composeData({ packages: update, averages: this.averages })
+        if (update == null) return
+        this.withDataUpdate({ averages: update })
       },
       focusedNode (focused, previous) {
         if (focused !== previous) {
-          const packageUrl = `/package/${focused.meta.id}`
+          const packageUrl = `/package/${focused.meta.package_id}`
+          const packageName = this.packages.get(focused.meta.package_id)
           this.showMoreInfo = true
           this.metaItems = [
-            new MetaEntry('Package Name', focused.meta.name, packageUrl),
-            new MetaEntry('GHC Version', focused.meta.ghc_version),
-            new MetaEntry('Avg Compilation Time', `${focused.y.toFixed(2)}s`),
-            new MetaEntry('Total Binary Size', `${commaSeperate(focused.x)}b`)
+            { key: 'Package Name', value: packageName, link: packageUrl },
+            { key: 'GHC Version', value: focused.meta.ghc_version },
+            { key: 'Avg Compilation Time', value: `${focused.y.toFixed(2)}s` },
+            { key: 'Total Binary Size', value: `${commaSeperate(focused.x)}b` }
           ]
         }
       }
@@ -126,14 +115,66 @@
     },
 
     methods: {
+      /**
+       * When data is loaded, it prepared for the plot
+       */
+      withDataUpdate ({ averages }) {
+        const { items, range: { x, y } } = prepareForPlot({
+          data: averages,
+          xOrigin: xFactory,
+          yOrigin: yFactory,
+          xName: 'total_size',
+          yName: 'average_time'
+        })
+        this.xAxisCanonical = x
+        this.yAxisCanonical = y
+        this.xAxisFiltered = x
+        this.yAxisFiltered = y
+        this.graphData = items
+      },
+
+      recalcuateItems () {
+        const { items } = prepareForPlot({
+          data: this.averages,
+          xOrigin: xFactory,
+          yOrigin: yFactory,
+          xName: 'total_size',
+          yName: 'average_time',
+          ranges: {
+            x: this.xAxisFiltered,
+            y: this.yAxisFiltered
+          }
+        })
+        this.graphData = items
+      },
+
+      /**
+       * callback passed to scatter plot to indicated a highlighed node
+       */
       nodeEntryData (focusedNode) {
         this.focusedNode = focusedNode
+      },
+
+      /**
+       * When the x filter has been updated
+       */
+      xFilterUpdate (update) {
+        this.xAxisFiltered = update
+        this.recalcuateItems()
+      },
+
+      /**
+       * When the y filter has been updated
+       */
+      yFilterUpdate (update) {
+        this.yAxisFiltered = update
+        this.recalcuateItems()
       }
     }
   }
 </script>
 
-<style>
+<style scoped>
   @import "../styles/common.css";
 
   :root {
@@ -142,41 +183,46 @@
     --title-space-ocupation: calc(var(--title-size) + (var(--title-padding-v) * 2));
   }
 
-  .akst__r-index {
-  }
-
-  .akst__r-index__content {
+  .panels {
     @apply --shared-parent-theme;
   }
 
-  .akst__r-index__left {
-    @apply --shared-left-theme;
+  .center {
+    @apply --shared-center-theme;
     padding-left: 1rem;
     box-sizing: border-box;
   }
 
-  .akst__r-index__right {
-    @apply --shared-right-theme;
+  .right, .left {
     padding: 0 1rem;
-    margin-top: 0.5rem;
-    margin-right: 1rem;
+    position: relative;
     box-sizing: border-box;
+    margin-top: 0.5rem;
     color: var(--color-yellow);
     background-color: var(--color-red);
+  }
 
-    @nest & > .akst__r-index__meta-ls {
+  .left {
+    @apply --shared-left-theme;
+    margin-left: 1rem;
+  }
+
+  .right {
+    @apply --shared-right-theme;
+    margin-right: 1rem;
+    @nest & > .metainfo-ls {
       list-style: none;
       padding-left: 0;
       font-size: 0.9em;
-      @nest & > .akst__r-index__meta {
-        @nest & > .akst__r-index__meta__key {
+      @nest & > .metainfo-it {
+        @nest & > .metainfo-key {
           font-weight: 500;
           font-style: italic;
           opacity: 0.8;
         }
-        @nest & > .akst__r-index__meta__value {
+        @nest & > .metainfo-value {
           font-weight: 900;
-          @nest & > .akst__r-index__meta__value__link {
+          @nest & > .metainfo-value-link {
             color: inherit;
             font-style: italic;
           }
@@ -185,23 +231,29 @@
     }
   }
 
-  .akst__r-index__info-title {
+  .filter-item-description {
+    margin: 0;
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .filter-slider {
+  }
+
+  .side-title {
     --title-size: 1.25rem;
   }
 
-  .akst__r-index__vis-title, .akst__r-index__info-title {
+  .side-title, .center-title {
     margin: 0;
     font-size: var(--title-size);
     padding: var(--title-padding-v) 0;
     line-height: 1;
     text-align: center;
     font-style: italic;
-    @nest & > h2 {
-      font-size: inherit;
-    }
   }
 
-  .akst__r-index__info__empty {
+  .metainfo-empty {
     font-weight: 700;
   }
 

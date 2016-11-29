@@ -5,7 +5,7 @@ export function round (number, places) {
 
 export function commaSeperate (number) {
   const santized = number != null ? number : 0
-  return santized.toString().replace((c, i, a) =>
+  return santized.toString().replace(/./g, (c, i, a) =>
     i && c !== '.' && ((a.length - i) % 3 === 0) ? ',' + c : c)
 }
 
