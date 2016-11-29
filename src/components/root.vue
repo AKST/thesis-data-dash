@@ -1,16 +1,23 @@
 <template>
   <div class="akst__thesis">
-    <router-view/>
+    <router-view v-if="!error.present"/>
+    <div v-else class="akst__error">
+      <t-title :message="'Error'" :level="1"/>
+      <t-title :message="error.value.message" :level="2"/>
+    </div>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
 
+  import tTitle from 'src/components/type/t-title'
+
   export default {
     name: 'index',
+    components: { tTitle },
     computed: mapGetters({
-      errors: 'errorMessage'
+      error: 'errorMessage'
     })
   }
 </script>
@@ -38,6 +45,15 @@
   }
   html.wf-active {
     font-family: 'Roboto Mono', Helvetica, Arial, sans-serif;
+  }
+
+  .akst__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
   }
 
   .akst__thesis {

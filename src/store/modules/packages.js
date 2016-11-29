@@ -1,5 +1,4 @@
-import getStore from 'src/services/database'
-import { staleData as stale } from 'src/util/time'
+import cacheUtil, { cacheFetchAll } from 'src/services/cache/util'
 import { LOAD_PACKAGES, ERROR_MESSAGE } from 'src/store/mutation-types'
 
 const STATES = Object.freeze({
@@ -8,32 +7,19 @@ const STATES = Object.freeze({
 })
 
 export const state = {
-  branch: STATES.loaded,
+  branch: STATES.empty,
   data: null
 }
 
 export const actions = {
   async getAllPackages ({ commit, state }) {
-    if (state.branch === STATES.loaded) { commit('ignorePackages') }
+    if (state.branch === STATES.loaded) { return commit('ignorePackages') }
 
     try {
-      const store = await getStore()
-      const packageMeta = await store.fetch('meta', 'packages')
-
-      if (stale(packageMeta.fetchedLast)) {
-        const packages = await fetch('/api/package')
-        const result = await packages.json()
-
-        await Promise.all([
-          store.insertAll('packages', result.data),
-          store.insert('meta', { ...packageMeta, fetchedLast: Date.now() })
-        ])
-        commit(LOAD_PACKAGES, packages)
-      }
+      commit(LOAD_PACKAGES, await cacheFetchAll({ url: '/api/package', store: 'packages' }))
     }
     catch (e) {
-      console.error(e)
-      commit(ERROR_MESSAGE, 'failed to load packages')
+      commit(ERROR_MESSAGE, cacheUtil.prepareError(e))
     }
   }
 }
@@ -43,7 +29,7 @@ export const mutations = {
 
   [LOAD_PACKAGES] (state, packages) {
     state.branch = STATES.loaded
-    state.data = packages.data
+    state.data = packages
   }
 }
 

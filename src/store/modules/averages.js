@@ -1,5 +1,4 @@
-import getStore from 'src/services/database'
-import { staleData as stale } from 'src/util/time'
+import cacheUtil, { cacheFetchAll } from 'src/services/cache/util'
 import { LOAD_AVERAGES, ERROR_MESSAGE } from 'src/store/mutation-types'
 
 const STATES = Object.freeze({
@@ -14,26 +13,16 @@ export const state = {
 
 export const actions = {
   async getAllAverages ({ commit, state }) {
-    if (state.branch === STATES.loaded) { commit('ignoreAverages') }
+    if (state.branch === STATES.loaded) {
+      commit('ignoreAverages')
+      return
+    }
 
     try {
-      const store = await getStore()
-      const averageMeta = await store.fetch('meta', 'averages')
-
-      if (stale(averageMeta.fetchedLast)) {
-        const averages = await fetch('/api/average')
-        const result = await averages.json()
-
-        await Promise.all([
-          store.insertAll('averages', result.data),
-          store.insert('meta', { ...averageMeta, fetchedLast: Date.now() })
-        ])
-        commit(LOAD_AVERAGES, result)
-      }
+      commit(LOAD_AVERAGES, await cacheFetchAll({ url: '/api/average', store: 'averages' }))
     }
     catch (e) {
-      console.error(e)
-      commit(ERROR_MESSAGE, 'failed to load averages')
+      commit(ERROR_MESSAGE, cacheUtil.prepareError(e))
     }
   }
 }
@@ -43,7 +32,7 @@ export const mutations = {
 
   [LOAD_AVERAGES] (state, averages) {
     state.branch = STATES.loaded
-    state.data = averages.data
+    state.data = averages
   }
 }
 

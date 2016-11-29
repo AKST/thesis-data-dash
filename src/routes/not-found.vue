@@ -2,7 +2,7 @@
   <div class="notfound-route">
     <nav-bar/>
     <div class="notfound-body">
-      <t-title class="notfound-message" :message="'not found'"/>
+      <t-title class="notfound-message" v-bind:message="'not found'"/>
     </div>
   </div>
 </template>

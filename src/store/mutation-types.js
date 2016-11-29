@@ -1,6 +1,8 @@
 export const LOAD_AVERAGES = 'LOAD_AVERAGES'
 export const LOAD_PACKAGES = 'LOAD_PACKAGES'
+
 export const ERROR_MESSAGE = 'ERROR_MESSAGE'
+
 export const ADD_NAV_ITEM = 'ADD_NAV_ITEM'
 export const REMOVE_NAV_ITEM = 'REMOVE_NAV_ITEM'
 

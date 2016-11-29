@@ -9,7 +9,7 @@ module.exports = {
     'html',
     "flowtype"
   ],
-  globals: { fetch: true },
+  globals: { fetch: true, getComputedStyle: true },
   rules: {
     'arrow-parens': 0,
     'brace-style': 0,

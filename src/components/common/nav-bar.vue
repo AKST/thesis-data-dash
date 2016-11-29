@@ -6,7 +6,7 @@
       -->
     <div class="nav-root-center">
       <a class="nav-title-link" href="/">
-        <t-title class="nav-title" :message="message" :level="titleLevel"></t-title>
+        <t-title class="nav-title" :message="message" :level="titleLevel"/>
       </a>
       <ul class="nav-links">
         <li class="nav-links-item" v-for="item in links">
@@ -40,7 +40,6 @@
   @import "../../styles/common.css";
 
   .nav-root-center {
-
     width: 100;
     height: 100%;
     display: flex;
@@ -50,17 +49,12 @@
 
   .nav-root {
     font-size: 1.5rem;
-    --h-padding: 0.6em;
+    --h-padding: 1rem;
     position: relative;
     box-sizing: border-box;
 
     padding: 0.75rem var(--h-padding);
-    width: var(--width-container);
-    margin: var(--margin-container);
-
-    @media (--mobile) {
-      width: var(--width-container-mobile);
-    }
+    width: 100%;
 
     &:after {
       position: absolute;

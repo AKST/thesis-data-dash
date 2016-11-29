@@ -27,7 +27,7 @@ export const getters = {
   navItems (state) {
     const items = [
       { url: '/releases', name: 'GHC Releases' },
-      { url: '/packages', name: 'Packages' }
+      { url: '/package', name: 'Packages' }
     ]
 
     return items

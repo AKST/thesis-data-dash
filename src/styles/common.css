@@ -6,9 +6,38 @@
   --color-yellow: hsla(42, 100%, 85%, 1);
   --color-red-shadow: rgba(154, 75, 78, 0);
 
-  --width-container: 900px;
   --margin-container: 0 auto;
+  --width-container: 900px;
+  --width-shared-right: 300px;
+  --width-shared-left: calc(100% - var(--width-shared-right));
   --width-container-mobile: 100%;
+  --height-nav: 70px;
+
+  --container-theme: {
+    width: var(--width-container);
+    /*margin: var(--margin-container);*/
+
+    @media (--mobile) {
+      width: var(--width-container-mobile);
+    }
+  };
+
+  --shared-parent-theme: {
+    display: flex;
+    position: relative;
+  }
+
+  --shared-left-theme: {
+    width: var(--width-shared-left);
+    padding-right: 1rem;
+    /*margin: var(--margin-container);*/
+
+    @media (--mobile) {
+      width: 100%;
+    }
+  };
+
+  --shared-right-theme: {
+    width: var(--width-shared-right);
+  }
 }
-
-
