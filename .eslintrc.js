@@ -11,8 +11,11 @@ module.exports = {
   ],
   globals: { fetch: true, getComputedStyle: true },
   rules: {
+    'semi': [1, 'never'],
+    'comma-dangle': [1, 'only-multiline'],
     'arrow-parens': 0,
     'brace-style': 0,
+    'no-multiple-empty-lines': 0,
     'flowtype/use-flow-type': 1,
     "flowtype/valid-syntax": 1,
     'generator-star-spacing': 0,

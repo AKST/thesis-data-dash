@@ -103,7 +103,7 @@
         this.mouseTarget('b', event)
       },
       mouseTarget (circleId, originalEvent) {
-        const handler = this.updateCircle(circleId, originalEvent)
+        const handler = this.redrawSlider(circleId, originalEvent)
         const finish = event => {
           this.$el.removeEventListener('mousemove', handler)
           this.$el.removeEventListener('mouseleave', finish)
@@ -114,7 +114,11 @@
         this.$el.addEventListener('mouseleave', finish)
         this.$el.addEventListener('mouseup', finish)
       },
-      updateCircle (circleId, { screenX: originalScreenX }) {
+
+      /**
+       * Updates draggable circle and the
+       */
+      redrawSlider (circleId, { screenX: originalScreenX }) {
         const originalX = this[circleId].x
         return ({ screenX: newScreenX }) => {
           const diff = originalScreenX - newScreenX

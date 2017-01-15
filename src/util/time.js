@@ -1,6 +1,7 @@
 export function staleData (time) {
-  const elapsed = Date.now() - time
-  return elapsed > (1000 * 60 * 60 * 24 * 5)
+  // const elapsed = Date.now() - time
+  // return elapsed > (1000 * 60 * 60 * 24 * 5)
+  return true
 }
 
 const promiseTimeoutMessage = 'Promise timed out'

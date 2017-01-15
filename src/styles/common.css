@@ -2,9 +2,13 @@
 @custom-media --mobile (width <= 900px);
 
 :root {
-  --color-red: #E85B70;
-  --color-yellow: hsla(42, 100%, 85%, 1);
-  --color-red-shadow: rgba(154, 75, 78, 0);
+  //--color-red: #E85B70;
+  //--color-yellow: hsla(42, 100%, 85%, 1);
+  //--color-red-shadow: rgba(154, 75, 78, 0);
+  --color-red: #000;
+  --color-yellow: #fff;
+  --color-red-shadow: rgba(0, 0, 0, 0.25);
+
 
   --margin-container: 0 auto;
   --width-container: 900px;

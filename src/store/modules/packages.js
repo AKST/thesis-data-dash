@@ -1,5 +1,6 @@
-import cacheUtil, { cacheFetchAll } from 'src/services/cache/util'
 import { LOAD_PACKAGES, ERROR_MESSAGE } from 'src/store/mutation-types'
+import { prepareError } from 'src/store/util/error'
+import { timeout } from 'src/util/time'
 
 const STATES = Object.freeze({
   empty: 'empty',
@@ -13,13 +14,15 @@ export const state = {
 
 export const actions = {
   async getAllPackages ({ commit, state }) {
-    if (state.branch === STATES.loaded) { return commit('ignorePackages') }
+    if (state.branch === STATES.loaded) { return }
 
     try {
-      commit(LOAD_PACKAGES, await cacheFetchAll({ url: '/api/package', store: 'packages' }))
+      const request = await timeout(fetch('/api/package'), 2000)
+      const parsed = await request.json()
+      commit(LOAD_PACKAGES, parsed.data)
     }
     catch (e) {
-      commit(ERROR_MESSAGE, cacheUtil.prepareError(e))
+      commit(ERROR_MESSAGE, prepareError(e))
     }
   }
 }

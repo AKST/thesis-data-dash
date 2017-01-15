@@ -123,8 +123,8 @@
           data: averages,
           xOrigin: xFactory,
           yOrigin: yFactory,
-          xName: 'total_size',
-          yName: 'average_time'
+          xName: 'size',
+          yName: 'time'
         })
         this.xAxisCanonical = x
         this.yAxisCanonical = y
@@ -133,13 +133,17 @@
         this.graphData = items
       },
 
+      /**
+       * Recalcates the items plotted, by the scatter plot
+       * using a range based filter exclude certain items
+       */
       recalcuateItems () {
         const { items } = prepareForPlot({
           data: this.averages,
           xOrigin: xFactory,
           yOrigin: yFactory,
-          xName: 'total_size',
-          yName: 'average_time',
+          xName: 'size',
+          yName: 'time',
           ranges: {
             x: this.xAxisFiltered,
             y: this.yAxisFiltered

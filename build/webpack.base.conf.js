@@ -1,3 +1,4 @@
+var ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
 var path = require('path')
 var config = require('../config')
 var utils = require('./utils')
@@ -98,5 +99,8 @@ module.exports = {
         browsers: ['last 2 versions']
       })
     ]
-  }
+  },
+  plugins: new ServiceWorkerWebpackPlugin({
+    entry: path.join(projectRoot, 'src/service-worker')
+  })
 }
