@@ -23,7 +23,7 @@ export function timeout (promise, maxtime) {
     promise.then(result => {
       clearTimeout(id)
       resolve(result)
-    }, error => {
+    }).catch(error => {
       clearTimeout(id)
       reject(error)
     })

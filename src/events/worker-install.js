@@ -1,9 +1,10 @@
-/* globals caches */
-import { CACHE_KEY, URLS_TO_CACHE } from 'src/util/constants'
+/* globals self, caches */
+import { CACHE_KEY, CACHE_ONE_LOAD } from 'src/util/constants'
 
 async function initCache () {
   const cache = await caches.open(CACHE_KEY)
-  return await cache.addAll(URLS_TO_CACHE)
+  await self.skipWaiting()
+  await cache.addAll(CACHE_ONE_LOAD)
 }
 
 export function handler (event) {

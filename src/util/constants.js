@@ -1,8 +1,17 @@
+/* globals location */
+
+const root = location.origin
+
 export const CACHE_KEY = 'THESIS-CACHE-0.1'
-export const URLS_TO_CACHE = [
-  '/api/package',
-  '/api/average?type=size',
-  '/api/average?type=time',
+
+export const CACHE_ONE_LOAD = [
+  `${root}/api/package`,
+  `${root}/api/average?type=size`,
+  `${root}/api/average?type=time`
 ]
 
-export default { CACHE_KEY, URLS_TO_CACHE }
+export const CACHE_ONCE = [
+  /$http:\/\/fonts\.gstatic\.com/
+]
+
+export default { CACHE_KEY }

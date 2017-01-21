@@ -1,5 +1,7 @@
 import Index from 'src/routes/index'
 import PackageRoot from 'src/routes/package'
+import PackageList from 'src/routes/package/list'
+import PackageItem from 'src/routes/package/item'
 import NotFound from 'src/routes/not-found'
 
 export default {
@@ -11,9 +13,19 @@ export default {
       component: Index
     },
     {
+      path: '/releases',
+      component: NotFound,
+    },
+    {
       path: '/package',
       component: PackageRoot,
-      children: []
+      children: [{
+        path: '',
+        component: PackageList
+      }, {
+        path: ':id',
+        component: PackageItem
+      }]
     },
     {
       path: '/*',
