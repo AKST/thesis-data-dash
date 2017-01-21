@@ -63,7 +63,7 @@ function format (ext) {
 
 function withAverages (time, size) {
   const idRegex = /\d+-\d+\.\d+\.\d+/
-  const extensions = new Set();
+  const extensions = new Set()
   const map = {}
 
   for (const entry of size) {
@@ -76,7 +76,7 @@ function withAverages (time, size) {
 
     const fileExt = entry.data['file-extension']
     map[id].sizes[fileExt] = entry.data['average-size']
-    extensions.add(fileExt);
+    extensions.add(fileExt)
   }
 
   return {

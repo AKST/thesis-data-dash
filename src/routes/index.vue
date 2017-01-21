@@ -49,6 +49,7 @@
 <script>
   import { mapGetters } from 'vuex'
 
+  import { verstr } from 'src/util/semver'
   import { commaSeperate } from 'src/util/math'
   import { prepareForPlot, RangeFactory } from 'src/util/graph-model'
   import navBar from 'src/components/common/nav-bar'
@@ -96,12 +97,12 @@
       },
       focusedNode (focused, previous) {
         if (focused !== previous) {
-          const packageUrl = `/package/${focused.meta.package_id}`
-          const packageName = this.packages.get(focused.meta.package_id)
+          const packageUrl = `/package/${focused.meta.packageId}`
+          const packageName = this.packages.get(focused.meta.packageId)
           this.showMoreInfo = true
           this.metaItems = [
             { key: 'Package Name', value: packageName, link: packageUrl },
-            { key: 'GHC Version', value: focused.meta.ghc_version },
+            { key: 'GHC Version', value: verstr(focused.meta.ghc) },
             { key: 'Avg Compilation Time', value: `${focused.y.toFixed(2)}s` },
             { key: 'Total Binary Size', value: `${commaSeperate(focused.x)}b` }
           ]

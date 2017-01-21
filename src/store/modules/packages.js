@@ -42,7 +42,7 @@ export const getters = {
   },
   allPackagesAsMap (state) {
     const map = new Map()
-    for (const { id, name } of state.data) {
+    for (const { id, data: { name } } of state.data) {
       map.set(id, name)
     }
     return map
