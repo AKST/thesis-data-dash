@@ -7,6 +7,7 @@ function shouldCacheResponse (response) {
 
 function cacheOnEach (request) {
   return request.url.startsWith(location.origin)
+      && !request.url.endsWith('/__webpack_hmr')
 }
 
 function requestOnce (request) {
