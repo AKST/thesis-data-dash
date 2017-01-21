@@ -5,12 +5,14 @@
       -  space-between as justify-content and flex box
       -->
     <div class="nav-root-center">
-      <a class="nav-title-link" href="/">
+      <router-link tag="a" class="nav-title-link" to="/">
         <t-title class="nav-title" :message="message" :level="titleLevel"/>
-      </a>
+      </router-link>
       <ul class="nav-links">
         <li class="nav-links-item" v-for="item in links">
-          <a class="nav-links-link" v-bind:href="item.url">{{item.name}}</a>
+          <router-link tag="a" class="nav-links-link" :to="item.url">
+            {{item.name}}
+          </router-link>
         </li>
       </ul>
     </div>

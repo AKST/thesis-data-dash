@@ -24,7 +24,6 @@ export const getters = {
 export const mutations = {
   [ERROR_MESSAGE] (state, { type, error }) {
     const message = errorMessageFromType(type)
-    console.error(error)
     state.error = { present: true, value: { message, error } }
   }
 }
