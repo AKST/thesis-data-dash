@@ -12,6 +12,12 @@ module.exports = {
   globals: { fetch: true, getComputedStyle: true },
   rules: {
     'semi': [1, 'never'],
+    'operator-linebreak': [2, 'before', {
+      overrides: {
+        "?": "ignore",
+        ":": "ignore"
+      }
+    }],
     'comma-dangle': [1, 'only-multiline'],
     'arrow-parens': 0,
     'brace-style': 0,

@@ -2,6 +2,11 @@ import app from 'src/init/app'
 import store from 'src/init/store'
 import router from 'src/init/router'
 import loader from 'webfontloader'
+import runtime from 'serviceworker-webpack-plugin/lib/runtime'
+
+const registration = 'serviceWorker' in navigator
+  ? runtime.register()
+  : Promise.reject(new Error('`serviceWorker` is not in `navigator`'))
 
 loader.load({
   google: {
@@ -9,4 +14,4 @@ loader.load({
   }
 })
 
-export default app({ store, router })
+export default app({ store, router, sw: registration })

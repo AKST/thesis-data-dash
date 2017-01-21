@@ -100,7 +100,9 @@ module.exports = {
       })
     ]
   },
-  plugins: new ServiceWorkerWebpackPlugin({
-    entry: path.join(projectRoot, 'src/service-worker')
-  })
+  plugins: [
+    new ServiceWorkerWebpackPlugin({
+      entry: path.join(projectRoot, 'src/service-worker')
+    })
+  ]
 }
