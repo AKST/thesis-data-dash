@@ -14,10 +14,12 @@ module.exports = {
     'semi': [1, 'never'],
     'operator-linebreak': [2, 'before', {
       overrides: {
+        "=": "ignore",
         "?": "ignore",
         ":": "ignore"
       }
     }],
+    'spaced-comment': 1,
     'comma-dangle': [1, 'only-multiline'],
     'arrow-parens': 0,
     'brace-style': 0,

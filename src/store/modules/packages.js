@@ -1,6 +1,5 @@
 import { LOAD_PACKAGES, ERROR_MESSAGE } from 'src/store/mutation-types'
 import { prepareError } from 'src/store/util/error'
-import { timeout } from 'src/util/time'
 
 const STATES = Object.freeze({
   empty: 'empty',
@@ -17,7 +16,7 @@ export const actions = {
     if (state.branch === STATES.loaded) { return }
 
     try {
-      const request = await timeout(fetch('/api/package'), 2000)
+      const request = await fetch('/api/package')
       const parsed = await request.json()
       commit(LOAD_PACKAGES, parsed.data)
     }

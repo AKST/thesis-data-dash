@@ -2,8 +2,7 @@
 
 async function withEvent (event) {
   const cacheKeys = await caches.keys()
-  const deletes = cacheKeys.map(key => caches.delete(key))
-  await Promise.all(deletes)
+  await Promise.all(cacheKeys.map(key => caches.delete(key)))
   await self.clients.claim()
 }
 

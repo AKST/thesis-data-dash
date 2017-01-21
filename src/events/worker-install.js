@@ -1,10 +1,10 @@
 /* globals self, caches */
-import { CACHE_KEY, CACHE_ONE_LOAD } from 'src/util/constants'
+import { CACHE_OFFLINE_KEY, CACHE_OFFLINE } from 'src/util/constants'
 
 async function initCache () {
-  const cache = await caches.open(CACHE_KEY)
   await self.skipWaiting()
-  await cache.addAll(CACHE_ONE_LOAD)
+  const cache = await caches.open(CACHE_OFFLINE_KEY)
+  await cache.addAll(CACHE_OFFLINE)
 }
 
 export function handler (event) {

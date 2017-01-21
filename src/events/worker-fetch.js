@@ -1,5 +1,9 @@
 /* globals caches, location */
-import { CACHE_KEY, CACHE_ONCE } from 'src/util/constants'
+import {
+  CACHE_OFFLINE_KEY,
+  CACHE_ONCE_KEY,
+  CACHE_ONCE
+} from 'src/util/constants'
 
 function shouldCacheResponse (response) {
   return response != null && response.ok
@@ -14,8 +18,8 @@ function requestOnce (request) {
   return CACHE_ONCE.some(r => request.url.match(r))
 }
 
-async function cacheForOffline (request, response) {
-  const cache = await caches.open(CACHE_KEY)
+async function cacheForOffline (request, response, key) {
+  const cache = await caches.open(key)
   cache.put(request, response.clone())
 }
 
@@ -37,14 +41,18 @@ async function withRequest (event) {
       if (cached != null) return cached
 
       const response = await fetch(requestClone)
-      if (shouldCacheResponse(response)) await cacheForOffline(request, response)
+      if (shouldCacheResponse(response)) {
+        await cacheForOffline(request, response, CACHE_ONCE_KEY)
+      }
 
       return response
     }
     // any GET request within our domain
     else if (cacheOnEach(request)) {
       const response = await fetch(requestClone)
-      if (shouldCacheResponse) await cacheForOffline(request, response)
+      if (shouldCacheResponse) {
+        await cacheForOffline(request, response, CACHE_OFFLINE_KEY)
+      }
       return response
     }
     else {

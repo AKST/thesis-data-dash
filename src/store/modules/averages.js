@@ -1,6 +1,6 @@
 import { ERROR_MESSAGE } from 'src/store/mutation-types'
+import { fetchJson, checkCachedJson, request } from 'src/store/util/data'
 import { prepareError } from 'src/store/util/error'
-import { timeout } from 'src/util/time'
 
 const STATES = Object.freeze({
   empty: 'empty',
@@ -17,23 +17,24 @@ export const state = {
 
 export const actions = {
   async getAllAverages ({ commit, state }) {
-    async function request (q, commitId) {
-      const r = await timeout(fetch(`/api/average?${q}`), 10000)
-      return await r.json()
-    }
-
     try {
-      const sizeURL = `type=size`
-      const timeURL = 'type=time'
+      const getSize = request('api/average', { type: 'size' })
+      const getTime = request('api/average', { type: 'time' })
+      const cached = await Promise.all([getSize, getTime].map(checkCachedJson))
 
-      const [{ data: time }, { data: size }] = await Promise.all([
-        request(timeURL, 'LOADED_TIMES'),
-        request(sizeURL, 'LOADED_SIZES')
-      ])
+      // setup from cache, before requesting
+      if (cached[0] != null && cached[1] != null) {
+        const [{ data: size }, { data: time }] = cached
+        commit('LOAD_AVERAGES', { time, size })
+      }
 
+      // setup canonical version from fetch
+      const fetched = await Promise.all([getSize, getTime].map(fetchJson))
+      const [{ data: size }, { data: time }] = fetched
       commit('LOAD_AVERAGES', { time, size })
     }
     catch (e) {
+      console.error(e)
       commit(ERROR_MESSAGE, prepareError(e))
     }
   }
