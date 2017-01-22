@@ -19,7 +19,7 @@ module.exports = {
         ":": "ignore"
       }
     }],
-    'spaced-comment': 1,
+    'spaced-comment': 0,
     'comma-dangle': [1, 'only-multiline'],
     'arrow-parens': 0,
     'brace-style': 0,

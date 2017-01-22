@@ -1,4 +1,5 @@
 var ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
+var CopyWebpackPlugin = require('copy-webpack-plugin')
 var path = require('path')
 var config = require('../config')
 var utils = require('./utils')
@@ -101,6 +102,10 @@ module.exports = {
     ]
   },
   plugins: [
+    new CopyWebpackPlugin([
+      { from: path.join(projectRoot, 'src/assets'), to: 'assets' },
+      { from: path.join(projectRoot, 'manifest.json'), to: 'manifest.json' }
+    ]),
     new ServiceWorkerWebpackPlugin({
       entry: path.join(projectRoot, 'src/service-worker')
     })
