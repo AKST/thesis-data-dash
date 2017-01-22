@@ -8,6 +8,10 @@
   import { scaleLinear } from 'd3-scale'
   import { axisBottom, axisLeft } from 'd3-axis'
 
+  function nanFallback (number, fallback) {
+    return Number.isNaN(number) ? fallback : number
+  }
+
   export default {
     name: 'g-scatter-plot',
 
@@ -120,7 +124,7 @@
         main.append('svg:g')
           .selectAll('akst__g-sp__svg__item')
             .data(this.items).enter().append('svg:circle')
-              .attr('cx', item => xScale(item.x))
+              .attr('cx', item => nanFallback(xScale(item.x), 0))
               .attr('cy', item => yScale(item.y))
               .attr('class', 'akst__g-sp__svg__item')
               .attr('r', 5)
