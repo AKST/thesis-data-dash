@@ -12,6 +12,11 @@
     return Number.isNaN(number) ? fallback : number
   }
 
+  function circleRadius ({ meta: { ghc: { major, minor } } }) {
+    const base = major === 8 ? 12 : 0
+    return (base + 3 + minor) / 2
+  }
+
   export default {
     name: 'g-scatter-plot',
 
@@ -127,7 +132,7 @@
               .attr('cx', item => nanFallback(xScale(item.x), 0))
               .attr('cy', item => yScale(item.y))
               .attr('class', 'akst__g-sp__svg__item')
-              .attr('r', 5)
+              .attr('r', circleRadius)
               .on('mouseover', d => this.onNodeEnter(d))
               .on('mouseout', () => this.onNodeExit())
 
