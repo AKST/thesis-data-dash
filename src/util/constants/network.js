@@ -14,10 +14,10 @@ export const CACHE_ON_INIT = [
 ]
 
 export const CACHE_ONCE_URLS = [
-  /$http:\/\/fonts\.gstatic\.com/
+  /^http:\/\/fonts\.gstatic\.com/
 ]
 
-export const API_REGEX = new RegExp(`$http:\\/\\/${root}/api*`)
+export const API_REGEX = new RegExp(`^${root}/api`)
 
 export default {
   CACHE_ONCE_KEY,
