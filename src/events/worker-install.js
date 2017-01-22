@@ -3,8 +3,13 @@ import { CACHE_OFFLINE_KEY, CACHE_OFFLINE } from 'src/util/constants'
 
 async function initCache () {
   await self.skipWaiting()
-  const cache = await caches.open(CACHE_OFFLINE_KEY)
-  await cache.addAll(CACHE_OFFLINE)
+  try {
+    const cache = await caches.open(CACHE_OFFLINE_KEY)
+    await cache.addAll(CACHE_OFFLINE)
+  }
+  catch (error) {
+    console.warn(error)
+  }
 }
 
 export function handler (event) {

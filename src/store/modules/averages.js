@@ -14,7 +14,6 @@ export const state = {
   data: [],
 }
 
-
 export const actions = {
   async getAllAverages ({ commit, state }) {
     try {
@@ -56,7 +55,6 @@ export const getters = {
       : null
   }
 }
-
 
 function format (ext) {
   return item => ({ size: item.sizes[ext], ...item })

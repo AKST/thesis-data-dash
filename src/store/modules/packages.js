@@ -1,4 +1,5 @@
 import { LOAD_PACKAGES, ERROR_MESSAGE } from 'src/store/mutation-types'
+import { request, checkCachedJson } from 'src/store/util/data'
 import { prepareError } from 'src/store/util/error'
 
 const STATES = Object.freeze({
@@ -16,8 +17,14 @@ export const actions = {
     if (state.branch === STATES.loaded) { return }
 
     try {
-      const request = await fetch('/api/package')
-      const parsed = await request.json()
+      const getPackages = request('api/package')
+      const cachedResponse = await checkCachedJson(getPackages)
+      if (cachedResponse != null) {
+        commit(LOAD_PACKAGES, cachedResponse.data)
+      }
+
+      const response = await fetch(getPackages)
+      const parsed = await response.json()
       commit(LOAD_PACKAGES, parsed.data)
     }
     catch (e) {

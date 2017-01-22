@@ -7,8 +7,8 @@ export function request (path, params) {
 }
 
 export async function fetchJson (request) {
-  const f = await fetch(request)
-  return await f.json()
+  const r = await fetch(request)
+  return await r.json()
 }
 
 export async function checkCachedJson (request) {

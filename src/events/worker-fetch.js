@@ -50,10 +50,18 @@ async function withRequest (event) {
     // any GET request within our domain
     else if (cacheOnEach(request)) {
       const response = await fetch(requestClone)
-      if (shouldCacheResponse) {
-        await cacheForOffline(request, response, CACHE_OFFLINE_KEY)
+      if (response.status >= 500) {
+        const cached = await caches.match(request)
+        return (cached != null) ? cached : response
       }
-      return response
+      else if (shouldCacheResponse(response)) {
+        await cacheForOffline(request, response, CACHE_OFFLINE_KEY)
+
+        return response
+      }
+      else {
+        return response
+      }
     }
     else {
       return await fetch(request)
