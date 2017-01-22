@@ -33,7 +33,9 @@
           <li class="metainfo-it" v-for="i in metaItems">
             <span class="metainfo-key">{{i.key}}</span>
             <span class="metainfo-value" v-if="i.link">
-              <a v-bind:href="i.link" class="metainfo-value-link">{{i.value}}</a>
+              <router-link tag="a" :to="i.link" class="metainfo-value-link">
+                {{i.value}}
+              </router-link>
             </span>
             <span class="metainfo-value" v-else>{{i.value}}</span>
           </li>
