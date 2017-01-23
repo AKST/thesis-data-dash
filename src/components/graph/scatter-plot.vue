@@ -3,8 +3,11 @@
 </template>
 
 <script>
+  import { compare as semverComp } from 'src/util/semver'
+  import { groupBy } from 'lodash'
   import { elementHeight, elementWidth } from 'src/util/dom'
   import { select as d3Select } from 'd3-selection'
+  import { line } from 'd3-shape'
   import { scaleLinear } from 'd3-scale'
   import { axisBottom, axisLeft } from 'd3-axis'
 
@@ -17,11 +20,18 @@
     return (base + 3 + minor) / 2
   }
 
+  function compare (a, b) {
+    return semverComp(a.meta.ghc, b.meta.ghc)
+  }
+
   export default {
     name: 'g-scatter-plot',
 
     data () {
-      return { _chart: null, _animationFrame: 0 }
+      return { _chart: null, lines: null, _animationFrame: 0 }
+    },
+
+    computed: {
     },
 
     props: {
@@ -62,6 +72,8 @@
 
     watch: {
       items () {
+        const grouped = groupBy(this.items, it => it.meta.packageId)
+        this.lines = Object.values(grouped).map(it => it.sort(compare))
         this.renderData()
       }
     },
@@ -151,6 +163,19 @@
           .attr('transform', `translate(${yTitleX}, ${yTitleY}) rotate(-90)`)
           .attr('class', 'akst__g-sp__svg__axis__label')
           .text(this.yAxis.description)
+
+        // lines for showing linked versions
+        const lineFunction = line()
+          .x(it => nanFallback(xScale(it.x), 0))
+          .y(it => yScale(it.y))
+
+        for (const line of this.lines) {
+          main.append('path')
+            .attr('d', lineFunction(line))
+            .attr('class', 'akst__g-sp__svg__line')
+            .attr('fill', 'transparent')
+            .attr('stroke-width', 2)
+        }
       }
     }
   }
@@ -166,6 +191,10 @@
 
   .akst__g-sp__svg__item {
     fill: color(var(--color-red) alpha(50%));
+  }
+
+  .akst__g-sp__svg__line {
+    stroke: color(var(--color-red) alpha(45%));
   }
 
   @custom-selector :--axis .akst__g-sp__svg__axis--x, .akst__g-sp__svg__axis--y;

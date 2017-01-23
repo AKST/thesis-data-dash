@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "d3": "^4.4.0",
+    "lodash": "^4.17.4",
     "nvd3": "^1.7.1",
     "object-assign": "^4.1.0",
     "postcss-simple-vars": "^3.0.0",
