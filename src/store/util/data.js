@@ -12,6 +12,11 @@ export async function fetchJson (request) {
 }
 
 export async function checkCachedJson (request) {
-  const c = await caches.match(request)
-  return c != null ? (await c.json()) : c
+  if (typeof caches !== 'undefined') {
+    const c = await caches.match(request)
+    return c != null ? (await c.json()) : c
+  }
+  else {
+    return null
+  }
 }
