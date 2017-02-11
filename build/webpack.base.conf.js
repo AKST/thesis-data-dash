@@ -14,8 +14,7 @@ var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
 module.exports = {
   entry: {
-    polyfills: './src/init/polyfills.js',
-    app: './src/main.js'
+    app: ['./src/init/polyfills.js', './src/main.js']
   },
   output: {
     path: config.build.assetsRoot,
